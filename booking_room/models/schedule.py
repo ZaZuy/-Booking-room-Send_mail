@@ -116,6 +116,7 @@ class MeetingSchedule(models.Model):
     edit_time_start = fields.Char()
     edit_time_end = fields.Char()
     reason_delete = fields.Char()
+    count = fields.Integer(default = 0)
     edit_emp = fields.Many2many(comodel_name="hr.employee", string="Attendees", tracking=True,relation="meeting_schedule_edit_emp_rel" )
 
     def _compute_default_start_minutes(self):
@@ -344,7 +345,7 @@ class MeetingSchedule(models.Model):
             elif local_end_date == end_datetime.date():
                 new_end_date = end_date + timedelta(days=1)
 
-        self.write({"end_date": new_end_date, "e_date": new_end_date.date(), "meeting_type": "normal"})
+        self.write({"end_date": new_end_date, "e_date": new_end_date.date(), "meeting_type": "normal","count":1})
 
         weekday_attributes = [
             self.monday,
@@ -514,7 +515,7 @@ class MeetingSchedule(models.Model):
                 template_id = self.env.ref('booking_room.template_sendmail_add_attendens')
                 for record in self:
                     template_id.send_mail(record.id, force_send=True)
-        if start_date!=None or end_date!=None or change_room!=None:       
+        if start_date!=None or end_date!=None or change_room!=None:     
             self.edit_emp=self.partner_ids
             template_id = self.env.ref(template)
             for record in self:
@@ -551,20 +552,21 @@ class MeetingSchedule(models.Model):
         return meeting_schedule
 
     def write(self, vals):
-        for record in self:
-            start_date = vals.get("start_date")
-            end_date = vals.get("end_date")
-            name_event =  vals.get("room_id")
-            edit_attendees = vals.get('partner_ids')
-            if not record.check_is_hr():
-                if self.env.uid != record.user_id.id:
-                    raise ValidationError("Cannot modify someone else's meeting")
-                if self._check_is_past_date(record.start_date):
-                    raise ValidationError("Cannot edit ongoing or finished meetings")
-                if self._check_is_past_date(start_date):
-                    raise ValidationError("Start date cannot be in the past")
-            if start_date!= None or end_date!= None or name_event!=None or edit_attendees!=None:
-                self.send_meeting_email_edit('booking_room.template_sendmail_edit_event',vals)
+        if vals.get("count") !=1:
+            for record in self:
+                start_date = vals.get("start_date")
+                end_date = vals.get("end_date")
+                name_event =  vals.get("room_id")
+                edit_attendees = vals.get('partner_ids')
+                if not record.check_is_hr():
+                    if self.env.uid != record.user_id.id:
+                        raise ValidationError("Cannot modify someone else's meeting")
+                    if self._check_is_past_date(record.start_date):
+                        raise ValidationError("Cannot edit ongoing or finished meetings")
+                    if self._check_is_past_date(start_date):
+                        raise ValidationError("Start date cannot be in the past")
+                if start_date!= None or end_date!= None or name_event!=None or edit_attendees!=None:
+                    self.send_meeting_email_edit('booking_room.template_sendmail_edit_event',vals)
         return super(MeetingSchedule, self).write(vals)
 
     def unlink(self):

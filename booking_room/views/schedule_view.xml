@@ -177,7 +177,8 @@
                             <field name="edit_time_end" invisible="1" />
                             <field name="edit_time_start" invisible="1" /> 
                             <field name="reason_delete" invisible="1"/>      
-                            <field name="edit_emp" invisible="1"/>                        
+                            <field name="edit_emp" invisible="1"/>  
+                            <field name="count" invisible="1"/>                        
                         </group>
                     </group>
                     <!-- attachment -->
