@@ -1,0 +1,60 @@
+<odoo>
+    <data>
+        <record id="template_send_mail_delete" model="mail.template">
+            <field name="name">Send mail</field>
+            <field name="model_id" ref="model_meeting_schedule"/>
+            <field name="subject">Meeting Schedule</field>
+            <field name="email_from">{{object.create_uid.email_formatted or ''}}</field>
+            <field name="email_to">{{ ','.join(partner.work_email for partner in object.partner_ids if partner.work_email) }}</field>
+            <field name="body_html"><![CDATA[
+                <div id=":n1" class="ii gt" jslog="20277; u014N:xr6bB; 1:WyIjdGhyZWFkLWY6MTc5ODQ1MDQyMzE5NTQwOTM3NSJd; 4:WyIjbXNnLWY6MTc5ODQ1MDQyMzE5NTQwOTM3NSJd"><div id=":n2" class="a3s aiL "><table border="0" cellpadding="0" cellspacing="0" style="padding-top:16px;background-color:#f1f1f1;font-family:Verdana,Arial,sans-serif;color:#454748;width:100%;border-collapse:separate"><tbody><tr><td align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="590" style="padding:24px;background-color:white;color:#454748;border-collapse:separate">
+                    <tbody>
+                        <tr>
+                            <td align="center" style="min-width:590px">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:white;padding:0;border-collapse:separate">
+                                    <tbody><tr><td valign="middle">
+                                        <span style="font-size:10px">Your Invite meeting</span>
+                                        <span style="font-size:20px;font-weight:bold">
+                                        </span>
+                                    </td><td valign="middle" align="right">
+                                    </td></tr>
+                                    <tr><td colspan="2" style="text-align:center">
+                                      <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0;margin:4px 0px 32px 0px"></hr>
+                                    </td></tr>
+                                </tbody></table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="min-width:590px">
+                                <p style="margin:0px">
+                                    <p>Dear,</p>
+                                    <p style="margin-top: 8px;">I hope this email finds you well.</p>
+                                    </p>                            
+                                    <p>I regret to inform you that the "<t t-esc="object.meeting_subject"/>"  scheduled for <t t-esc="object.s_date"/> has been canceled. We apologize for any inconvenience this may cause and hope this does not disrupt your plans too much.</p>
+                                    <p>Reason : <t t-esc="object.reason_delete"/> </p>
+                                <p>Thank you!</p>
+                                <p style="padding-top: 24px; padding-bottom: 16px;">
+                                </p>
+                                <br/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="min-width:590px;padding:0 8px 0 8px;font-size:11px">
+                                <hr width="100%" style="background-color:rgb(204,204,204);border:medium none;clear:both;display:block;font-size:0px;min-height:1px;line-height:0;margin:16px 0px 4px 0px"></hr>
+                                <b><t t-esc="user.company_id.name"/></b><br/>
+                                <div style="color:#999999">
+                                    <t t-esc="object.user_id.phone"/>   
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    </td></tr>
+                    </tbody></table><div class="yj6qo"></div><div class="adL">
+                    </div></div></div>
+    
+            ]]></field>
+        </record>
+    </data>
+</odoo>
